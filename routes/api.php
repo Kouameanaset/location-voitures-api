@@ -21,3 +21,4 @@ Route::apiResource('paiements', PaiementController::class);
 // Routes imbriquées
 Route::get('clients/{client}/reservations', [ClientController::class, 'reservations']);
 Route::get('voitures/{voiture}/reservations', [VoitureController::class, 'reservations']);
+Route::get('categories/{categorie}/voitures', [CategorieController::class, 'voitures']);

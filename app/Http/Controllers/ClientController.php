@@ -97,7 +97,11 @@ class ClientController extends Controller
         return response()->json(['message' => 'Client supprimé.'], 200);
     }
 
-    // Route imbriquée : GET /api/clients/{client}/reservations
+    /**
+     * @param Client $client
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * Route imbriquée : GET /api/clients/{client}/reservations
+     */
     public function reservations(Client $client)
     {
         $reservations = $client->reservations()

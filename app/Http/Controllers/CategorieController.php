@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\CategorieResource;
+use App\Http\Resources\VoitureResource;
 use App\Models\Categorie;
 use Illuminate\Http\Request;
 
@@ -79,5 +80,19 @@ class CategorieController extends Controller
         $categorie->delete();
 
         return response()->json(['message' => 'Catégorie supprimée.'], 200);
+    }
+
+    /**
+     * @param Categorie $categorie
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * Route imbriquée : GET /api/categories/{categorie}/voitures
+     */
+    public function voitures(Categorie $categorie)
+    {
+        $voitures = $categorie->voitures()
+            ->with('categorie')
+            ->paginate(15);
+
+        return VoitureResource::collection($voitures);
     }
 }

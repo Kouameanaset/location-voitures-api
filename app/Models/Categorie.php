@@ -16,7 +16,7 @@ class Categorie extends Model
     ];
 
     protected $casts = [
-        'tarif_journalier' => 'decimal:2',
+        'tarif_journalier' => 'float',
     ];
 
     public function voitures()
