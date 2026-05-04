@@ -12,7 +12,10 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::apiResource('categories', CategorieController::class);
+Route::apiResource('categories', CategorieController::class)
+    ->parameters([
+        'categories' => 'categorie'
+    ]);
 Route::apiResource('clients', ClientController::class);
 Route::apiResource('voitures', VoitureController::class);
 Route::apiResource('reservations', ReservationController::class);
