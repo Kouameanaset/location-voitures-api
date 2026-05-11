@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * modele client
+ */
 class Client extends Model
 {
-    use HasFactory;
 
     protected $fillable = [
         'nom',
@@ -22,6 +24,9 @@ class Client extends Model
         'permis_expiration' => 'date',
     ];
 
+    /**
+     * reservations
+     */
     public function reservations()
     {
         return $this->hasMany(Reservation::class);

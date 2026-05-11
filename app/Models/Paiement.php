@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * modele paiement
+ */
 class Paiement extends Model
 {
-    use HasFactory;
 
     protected $fillable = [
         'reservation_id',
@@ -22,6 +24,9 @@ class Paiement extends Model
         'date_paiement' => 'datetime',
     ];
 
+    /**
+     * reservation
+     */
     public function reservation()
     {
         return $this->belongsTo(Reservation::class);

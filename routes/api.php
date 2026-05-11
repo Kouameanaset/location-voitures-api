@@ -12,6 +12,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+// Routes principales
 Route::apiResource('categories', CategorieController::class)
     ->parameters([
         'categories' => 'categorie'

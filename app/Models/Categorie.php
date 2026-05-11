@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * modele categorie
+ */
 class Categorie extends Model
 {
-    use HasFactory;
 
     protected $fillable = [
         'nom',
@@ -19,6 +21,9 @@ class Categorie extends Model
         'tarif_journalier' => 'float',
     ];
 
+    /**
+     * voitures
+     */
     public function voitures()
     {
         return $this->hasMany(Voiture::class);

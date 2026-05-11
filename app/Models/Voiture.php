@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Modele voiture
+ */
 class Voiture extends Model
 {
-    use HasFactory;
 
     protected $fillable = [
         'categorie_id',
@@ -25,11 +27,17 @@ class Voiture extends Model
         'kilometrage' => 'integer',
     ];
 
+    /**
+     * categorie
+     */
     public function categorie()
     {
         return $this->belongsTo(Categorie::class);
     }
 
+    /**
+     * reservations
+     */
     public function reservations()
     {
         return $this->hasMany(Reservation::class);

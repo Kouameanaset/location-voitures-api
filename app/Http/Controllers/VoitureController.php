@@ -7,6 +7,9 @@ use App\Http\Resources\VoitureResource;
 use App\Models\Voiture;
 use Illuminate\Http\Request;
 
+/**
+ * controller voiture
+ */
 class VoitureController extends Controller
 {
     /**
@@ -108,7 +111,9 @@ class VoitureController extends Controller
         return response()->json(['message' => 'Voiture supprimée.'], 200);
     }
 
-    // Route imbriquée : GET /api/voitures/{voiture}/reservations
+    /**
+     * Route imbriquée : GET /api/voitures/{voiture}/reservations
+     */
     public function reservations(Voiture $voiture)
     {
         $reservations = $voiture->reservations()

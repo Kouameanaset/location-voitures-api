@@ -7,6 +7,9 @@ use App\Http\Resources\VoitureResource;
 use App\Models\Categorie;
 use Illuminate\Http\Request;
 
+/**
+ * controller categorie
+ */
 class CategorieController extends Controller
 {
     /**

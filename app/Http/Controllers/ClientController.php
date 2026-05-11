@@ -7,6 +7,9 @@ use App\Http\Resources\ReservationResource;
 use App\Models\Client;
 use Illuminate\Http\Request;
 
+/**
+ * controller client
+ */
 class ClientController extends Controller
 {
     /**

@@ -14,6 +14,17 @@ class VoitureResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id'              => $this->id,
+            'marque'          => $this->marque,
+            'modele'          => $this->modele,
+            'annee'           => $this->annee,
+            'immatriculation' => $this->immatriculation,
+            'couleur'         => $this->couleur,
+            'kilometrage'     => $this->kilometrage,
+            'statut'          => $this->statut,
+            'categorie'       => new CategorieResource($this->whenLoaded('categorie')),
+            'created_at'      => $this->created_at?->format('Y-m-d'),
+        ];
     }
 }

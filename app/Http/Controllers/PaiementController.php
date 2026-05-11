@@ -7,6 +7,9 @@ use App\Models\Paiement;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
 
+/**
+ * Controller paiement
+ */
 class PaiementController extends Controller
 {
     /**

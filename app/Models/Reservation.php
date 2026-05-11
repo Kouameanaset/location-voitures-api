@@ -6,16 +6,17 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Modele reservation
+ */
 class Reservation extends Model
 {
-    use HasFactory;
 
     protected $fillable = [
         'client_id',
         'voiture_id',
         'date_debut',
         'date_fin',
-        //'prix_total',
         'statut',
         'notes',
     ];
@@ -25,24 +26,35 @@ class Reservation extends Model
     protected $casts = [
         'date_debut' => 'date',
         'date_fin' => 'date',
-        //'prix_total' => 'decimal:2',
     ];
 
+    /**
+     * client
+     */
     public function client()
     {
         return $this->belongsTo(Client::class);
     }
 
+    /**
+     * voiture
+     */
     public function voiture()
     {
         return $this->belongsTo(Voiture::class);
     }
 
+    /**
+     * paiement
+     */
     public function paiement()
     {
         return $this->hasOne(Paiement::class);
     }
 
+    /**
+     * prix total
+     */
     protected function prixTotal(): Attribute
     {
         return Attribute::make(

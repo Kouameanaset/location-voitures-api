@@ -8,6 +8,9 @@ use App\Models\Voiture;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
+/**
+ * controller reservation
+ */
 class ReservationController extends Controller
 {
     /**
