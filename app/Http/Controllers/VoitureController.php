@@ -19,17 +19,14 @@ class VoitureController extends Controller
     {
         $query = Voiture::with('categorie');
 
-        // Filtre par statut (ex: ?statut=disponible)
         if ($request->filled('statut')) {
             $query->where('statut', $request->statut);
         }
 
-        // Filtre par categorie (ex: ?categorie_id=2)
         if ($request->filled('categorie_id')) {
             $query->where('categorie_id', $request->categorie_id);
         }
 
-        // Filtre par marque/modele (ex: ?search=toyota)
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
                 $q->where('marque', 'like', '%' . $request->search . '%')

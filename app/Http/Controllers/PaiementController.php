@@ -19,12 +19,10 @@ class PaiementController extends Controller
     {
         $query = Paiement::with('reservation.client');
 
-        // Filtre par statut (ex: ?statut=complete)
         if ($request->filled('statut')) {
             $query->where('statut', $request->statut);
         }
 
-        // Filtre par méthode (ex: ?methode=carte)
         if ($request->filled('methode')) {
             $query->where('methode', $request->methode);
         }
@@ -45,7 +43,6 @@ class PaiementController extends Controller
             'methode'        => 'required|in:carte,comptant,virement,cheque',
         ]);
 
-        // Vérifier qu'il n'y a pas déjà un paiement complété pour cette réservation
         $existant = Paiement::where('reservation_id', $validated['reservation_id'])
             ->where('statut', 'complete')
             ->exists();
@@ -61,7 +58,6 @@ class PaiementController extends Controller
 
         $paiement = Paiement::create($validated);
 
-        // Confirmer automatiquement la réservation lors du paiement
         $reservation = Reservation::find($validated['reservation_id']);
         if ($reservation->statut === 'en_attente') {
             $reservation->update(['statut' => 'confirmee']);

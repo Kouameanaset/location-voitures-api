@@ -19,7 +19,6 @@ class ClientController extends Controller
     {
         $query = Client::withCount('reservations');
 
-        // Filtre par nom ou prénom
         if ($request->filled('nom')) {
             $query->where(function ($q) use ($request) {
                 $q->where('nom', 'like', '%' . $request->nom . '%')
@@ -27,7 +26,6 @@ class ClientController extends Controller
             });
         }
 
-        // Filtre par email
         if ($request->filled('email')) {
             $query->where('email', 'like', '%' . $request->email . '%');
         }

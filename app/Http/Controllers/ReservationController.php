@@ -20,22 +20,18 @@ class ReservationController extends Controller
     {
         $query = Reservation::with(['client', 'voiture.categorie', 'paiement']);
 
-        // Filtre par statut (ex: ?statut=confirmee)
         if ($request->filled('statut')) {
             $query->where('statut', $request->statut);
         }
 
-        // Filtre par date de début (ex: ?date_debut=2026-05-01)
         if ($request->filled('date_debut')) {
             $query->where('date_debut', '>=', $request->date_debut);
         }
 
-        // Filtre par client
         if ($request->filled('client_id')) {
             $query->where('client_id', $request->client_id);
         }
 
-        // Filtre par voiture
         if ($request->filled('voiture_id')) {
             $query->where('voiture_id', $request->voiture_id);
         }
@@ -58,7 +54,6 @@ class ReservationController extends Controller
             'notes'      => 'nullable|string',
         ]);
 
-        // Vérifier que la voiture est disponible
         $voiture = Voiture::findOrFail($validated['voiture_id']);
 
         if ($voiture->statut !== 'disponible') {
@@ -67,7 +62,6 @@ class ReservationController extends Controller
             ], 422);
         }
 
-        // Vérifier qu'il n'y a pas de conflit de dates
         $conflit = Reservation::where('voiture_id', $validated['voiture_id'])
             ->whereNotIn('statut', ['annulee', 'terminee'])
             ->where(function ($q) use ($validated) {
@@ -85,11 +79,6 @@ class ReservationController extends Controller
             ], 422);
         }
 
-        // Calculer le prix total automatiquement
-        $nbJours = (int) Carbon::parse($validated['date_debut'])
-            ->diffInDays(Carbon::parse($validated['date_fin']));
-
-        //$validated['prix_total'] = $nbJours * $voiture->categorie->tarif_journalier;
         $validated['statut']     = 'en_attente';
 
         $reservation = Reservation::create($validated);
@@ -117,7 +106,6 @@ class ReservationController extends Controller
             'notes'  => 'nullable|string',
         ]);
 
-        // Mettre à jour le statut de la voiture selon la réservation
         if (isset($validated['statut'])) {
             $voiture = $reservation->voiture;
 
