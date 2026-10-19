@@ -1,58 +1,75 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Location de voitures — API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+API REST Laravel pour gérer une agence de location de voitures : catégories de véhicules, voitures, clients, réservations et paiements. Elle est consommée par l'interface React du dépôt [location-voiture-front](https://github.com/Kouameanaset/location-voiture-front).
 
-## About Laravel
+## Technologies
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- PHP 8.3+, Laravel 13, Eloquent ORM
+- MySQL 8.4 (via Laravel Sail) ou SQLite en local
+- Laravel Sanctum installé (seule la route `/api/user` est protégée ; les autres ressources sont ouvertes)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Fonctionnalités
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- CRUD complet (`apiResource`) pour les catégories, clients, voitures, réservations et paiements.
+- Routes imbriquées : réservations d'un client, réservations d'une voiture, voitures d'une catégorie.
+- Création d'une réservation avec validation : client et voiture existants, date de début aujourd'hui ou plus tard, date de fin après la date de début.
+- **Règles métier** à la création d'une réservation :
+  - refus si la voiture n'est pas au statut `disponible` ;
+  - refus si les dates chevauchent une réservation non annulée et non terminée de la même voiture.
+- Évolution des statuts d'une réservation (`en_attente`, `confirmee`, `en_cours`, `terminee`, `annulee`) : la voiture passe à `louee` quand la réservation est en cours et redevient `disponible` quand elle est terminée ou annulée.
+- Liste des réservations filtrable (statut, date de début, client, voiture) et paginée (15 par page).
+- Recherche de voitures par marque ou modèle.
+- Réponses formatées avec des API Resources.
+- Seeders pour les catégories, voitures, clients et réservations.
 
-## Learning Laravel
+## Modèle de données
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+| Table | Colonnes principales |
+| --- | --- |
+| `categories` | nom, description, tarif_journalier |
+| `voitures` | categorie_id, marque, modele, annee, immatriculation (unique), couleur, kilometrage, statut (`disponible`, `louee`, `maintenance`, `hors_service`) |
+| `clients` | informations du client |
+| `reservations` | client_id, voiture_id, date_debut, date_fin, statut, notes |
+| `paiements` | reservation_id, montant, methode (`carte`, `comptant`, `virement`, `cheque`), statut (`en_attente`, `complete`, `rembourse`, `echoue`), date_paiement |
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Installation
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Prérequis : PHP 8.3+ et Composer, ou Docker pour utiliser Laravel Sail.
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+cp .env.example .env
+composer install
+php artisan key:generate
+php artisan migrate --seed
+php artisan serve
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Avec Sail (MySQL) :
 
-## Contributing
+```bash
+./vendor/bin/sail up -d
+./vendor/bin/sail artisan migrate --seed
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Par défaut, `.env.example` utilise SQLite. Pour MySQL avec Sail, ajustez les variables `DB_*` dans `.env`.
 
-## Code of Conduct
+## Endpoints principaux
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+| Méthode | Route | Description |
+| --- | --- | --- |
+| GET, POST | `/api/reservations` | Lister (filtres, pagination) ou créer une réservation |
+| GET, PUT, DELETE | `/api/reservations/{id}` | Consulter, modifier le statut ou supprimer |
+| GET | `/api/clients/{id}/reservations` | Réservations d'un client |
+| GET | `/api/voitures/{id}/reservations` | Réservations d'une voiture |
+| GET | `/api/categories/{id}/voitures` | Voitures d'une catégorie |
 
-## Security Vulnerabilities
+Les ressources `categories`, `clients`, `voitures` et `paiements` suivent le même schéma REST.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Limites connues
 
-## License
+- Les routes de ressources ne sont pas encore protégées par l'authentification.
+- Les tests automatisés se limitent aux tests d'exemple de Laravel.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Projet scolaire
+
+Projet réalisé dans le cadre du programme Techniques de l'informatique, Cégep Saint-Jean-sur-Richelieu.
